@@ -4,9 +4,12 @@ pragma solidity ^0.8.24;
 import { TOTP_sha1 } from "./lib/OTPSHA1.sol";
 import "./interface/IAuthenticator.sol";
 
+/// @title Authenticator
+/// @notice This contract manages TOTP (Time-based One-Time Password) authenticators for users
+/// @dev Implements the IAuthenticator interface
 contract Authenticator is IAuthenticator {
-  mapping(address => AuthenticatorEntry[]) private userAuthenticators;
-  mapping(address => uint256) private userAuthenticatorCount;
+  mapping(address => AuthenticatorEntry[]) private _userAuthenticators;
+  mapping(address => uint256) private _userAuthenticatorCount;
 
   bytes32 public constant EIP712_DOMAIN_TYPEHASH =
     keccak256(
@@ -16,6 +19,7 @@ contract Authenticator is IAuthenticator {
     keccak256("SignIn(address user,uint32 time)");
   bytes32 public immutable DOMAIN_SEPARATOR;
 
+  /// @notice Initializes the contract and sets the domain separator for EIP-712 signatures
   constructor() {
     DOMAIN_SEPARATOR = keccak256(
       abi.encode(
@@ -28,12 +32,20 @@ contract Authenticator is IAuthenticator {
     );
   }
 
+  /// @notice Ensures that the caller is authenticated using an EIP-712 signature
+  /// @param _auth The SignIn struct containing user address, timestamp, and signature
   modifier authenticated(SignIn calldata _auth) {
     if (_auth.time + 1 days <= block.timestamp) revert SignInExpired();
     if (_auth.user != _recoverSigner(_auth)) revert InvalidSignIn();
     _;
   }
 
+  /// @notice Adds a new authenticator for a user
+  /// @param _auth The SignIn struct for authentication
+  /// @param _secret The secret key for the authenticator
+  /// @param _label A label for the authenticator
+  /// @param _issuer The issuer of the authenticator
+  /// @param _timeStep The time step for TOTP generation
   function add(
     SignIn calldata _auth,
     bytes20 _secret,
@@ -41,9 +53,15 @@ contract Authenticator is IAuthenticator {
     string calldata _issuer,
     uint32 _timeStep
   ) external override authenticated(_auth) {
-    if (_timeStep == 0) revert InvalidTimeStep();
-    uint256 newId = userAuthenticatorCount[_auth.user];
-    userAuthenticators[_auth.user].push(
+    if (_secret == bytes20(0)) revert InvalidSecret();
+    if (bytes(_label).length == 0 || bytes(_label).length > 100)
+      revert InvalidLabel();
+    if (bytes(_issuer).length == 0 || bytes(_issuer).length > 100)
+      revert InvalidIssuer();
+    if (_timeStep == 0 || _timeStep > 3600) revert InvalidTimeStep();
+
+    uint256 newId = _userAuthenticatorCount[_auth.user];
+    _userAuthenticators[_auth.user].push(
       AuthenticatorEntry({
         id: newId,
         secret: _secret,
@@ -52,26 +70,38 @@ contract Authenticator is IAuthenticator {
         timeStep: _timeStep
       })
     );
-    userAuthenticatorCount[_auth.user]++;
+    _userAuthenticatorCount[_auth.user]++;
     emit AuthenticatorAdded(_auth.user, newId);
   }
 
+  /// @notice Removes an authenticator for a user
+  /// @param _auth The SignIn struct for authentication
+  /// @param _id The ID of the authenticator to remove
   function remove(
     SignIn calldata _auth,
     uint256 _id
   ) external override authenticated(_auth) {
-    AuthenticatorEntry[] storage authenticators = userAuthenticators[
+    AuthenticatorEntry[] storage authenticators = _userAuthenticators[
       _auth.user
     ];
     if (_id >= authenticators.length) revert IdOutOfBounds();
 
-    authenticators[_id] = authenticators[authenticators.length - 1];
-    authenticators[_id].id = _id;
+    uint256 lastIndex = authenticators.length - 1;
+    if (_id != lastIndex) {
+      authenticators[_id] = authenticators[lastIndex];
+      authenticators[_id].id = _id;
+    }
+
     authenticators.pop();
+    _userAuthenticatorCount[_auth.user]--;
 
     emit AuthenticatorRemoved(_auth.user, _id);
   }
 
+  /// @notice Generates TOTP codes for all authenticators of a user using a client-provided timestamp
+  /// @param _auth The SignIn struct for authentication
+  /// @param _clientTimestamp The timestamp to use for code generation
+  /// @return An array of AuthenticatorCode structs
   function generate(
     SignIn calldata _auth,
     uint256 _clientTimestamp
@@ -85,6 +115,9 @@ contract Authenticator is IAuthenticator {
     return _generateCodes(_auth.user, _clientTimestamp);
   }
 
+  /// @notice Generates TOTP codes for all authenticators of a user using the current block timestamp
+  /// @param _auth The SignIn struct for authentication
+  /// @return An array of AuthenticatorCode structs
   function generate(
     SignIn calldata _auth
   )
@@ -97,6 +130,9 @@ contract Authenticator is IAuthenticator {
     return _generateCodes(_auth.user, block.timestamp);
   }
 
+  /// @notice Exports all authenticator entries for a user
+  /// @param _auth The SignIn struct for authentication
+  /// @return An array of AuthenticatorEntry structs
   function export(
     SignIn calldata _auth
   )
@@ -106,9 +142,12 @@ contract Authenticator is IAuthenticator {
     authenticated(_auth)
     returns (AuthenticatorEntry[] memory)
   {
-    return userAuthenticators[_auth.user];
+    return _userAuthenticators[_auth.user];
   }
 
+  /// @notice Recovers the signer's address from the EIP-712 signature
+  /// @param _auth The SignIn struct containing the signature
+  /// @return The recovered signer's address
   function _recoverSigner(
     SignIn calldata _auth
   ) private view returns (address) {
@@ -124,16 +163,19 @@ contract Authenticator is IAuthenticator {
       ecrecover(authdataDigest, uint8(_auth.rsv.v), _auth.rsv.r, _auth.rsv.s);
   }
 
+  /// @notice Generates TOTP codes for all authenticators of a user
+  /// @param _user The address of the user
+  /// @param _timestamp The timestamp to use for code generation
+  /// @return An array of AuthenticatorCode structs
   function _generateCodes(
     address _user,
     uint256 _timestamp
   ) private view returns (AuthenticatorCode[] memory) {
-    AuthenticatorEntry[] storage authenticators = userAuthenticators[_user];
-    AuthenticatorCode[] memory codes = new AuthenticatorCode[](
-      authenticators.length
-    );
+    AuthenticatorEntry[] storage authenticators = _userAuthenticators[_user];
+    uint256 length = authenticators.length;
+    AuthenticatorCode[] memory codes = new AuthenticatorCode[](length);
 
-    for (uint i = 0; i < authenticators.length; i++) {
+    for (uint256 i = 0; i < length; ) {
       codes[i] = AuthenticatorCode({
         id: authenticators[i].id,
         code: TOTP_sha1(
@@ -144,6 +186,9 @@ contract Authenticator is IAuthenticator {
         label: authenticators[i].label,
         issuer: authenticators[i].issuer
       });
+      unchecked {
+        ++i;
+      }
     }
 
     return codes;
