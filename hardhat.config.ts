@@ -1,5 +1,6 @@
 import "@nomicfoundation/hardhat-toolbox-viem"
 import "@nomicfoundation/hardhat-viem"
+import "@oasisprotocol/sapphire-hardhat"
 import "dotenv/config"
 import "hardhat-contract-sizer"
 import "./scripts/generate"
@@ -42,34 +43,23 @@ const config: HardhatUserConfig = {
       url: process.env.SEPOLIA_RPC_URL || "https://rpc.ankr.com/eth_sepolia",
       accounts,
     },
-    optimism_sepolia: {
+    sapphire: {
+      url: process.env.SAPPHIRE_RPC_URL || "https://sapphire.oasis.io",
+      chainId: 0x5afe,
+      accounts,
+    },
+    "sapphire-testnet": {
       url:
-        process.env.OPTIMISM_SEPOLIA_RPC_URL ||
-        "https://rpc.ankr.com/optimism_sepolia",
+        process.env.SAPPHIRE_TESTNET_RPC_URL ||
+        "https://testnet.sapphire.oasis.io",
+      chainId: 0x5aff,
       accounts,
     },
-    base_sepolia: {
-      url:
-        process.env.BASE_SEPOLIA_RPC_URL || "https://rpc.ankr.com/base_sepolia",
+    "sapphire-localnet": {
+      url: process.env.SAPPHIRE_LOCALNET_RPC_URL || "http://localhost:8545",
+      chainId: 0x5afd,
       accounts,
     },
-    arbitrum_sepolia: {
-      url:
-        process.env.ARBITRUM_SEPOLIA_RPC_URL ||
-        "https://rpc.ankr.com/arbitrum_sepolia",
-      accounts,
-    },
-    mumbai: {
-      url: process.env.MUMBAI_RPC_URL || "https://rpc.ankr.com/polygon_mumbai",
-      accounts,
-    },
-    fuji: {
-      url: process.env.FUJI_RPC_URL || "https://rpc.ankr.com/avalanche_fuji",
-      accounts,
-    },
-  },
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
   },
   gasReporter: {
     enabled: true,

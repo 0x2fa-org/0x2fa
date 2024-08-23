@@ -1,4 +1,4 @@
-import { RunTaskFunction } from 'hardhat/types'
+import { RunTaskFunction } from "hardhat/types"
 
 export const verify = async (
   run: RunTaskFunction,
@@ -7,7 +7,7 @@ export const verify = async (
 ) => {
   while (true) {
     try {
-      await run('verify:verify', {
+      await run("verify:sourcify", {
         address,
         constructorArguments,
       })

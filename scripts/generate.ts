@@ -1,20 +1,20 @@
-import { task } from 'hardhat/config'
+import { task } from "hardhat/config"
 import {
   english,
   generateMnemonic,
   mnemonicToAccount,
   privateKeyToAccount,
-} from 'viem/accounts'
+} from "viem/accounts"
 
 type address = `0x${string}`
 
 task(
-  'generate',
+  "generate",
   "🌱 Generate a seed phrase with it's corresponding private and public keys."
 )
   .addOptionalParam(
-    'prefix',
-    'Prefix the private key with a specific pattern... i.e. 0x1234'
+    "prefix",
+    "Prefix the private key with a specific pattern... i.e. 0x1234"
   )
   .setAction(async (args) => {
     let privateKey: address, account: address, mnemonic: string
@@ -23,7 +23,7 @@ task(
       mnemonic = generateMnemonic(english)
       privateKey = `0x${Buffer.from(
         mnemonicToAccount(mnemonic).getHdKey().privateKey!
-      ).toString('hex')}`
+      ).toString("hex")}`
       account = privateKeyToAccount(privateKey).address
       if (!args.prefix) break
     } while (
