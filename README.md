@@ -1,6 +1,6 @@
 # 0x2fa
 
-0x2fa is a decentralized two-factor authentication (2FA) system built on blockchain technology. It provides a secure and user-friendly way to implement 2FA for Ethereum-based applications.
+0x2fa is a two-factor authentication (2FA) system built on Oasis Protocol. It provides a secure, decentralized and user-friendly way to implement 2FA for any application.
 
 ## Project Structure
 
