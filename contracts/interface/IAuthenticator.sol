@@ -32,6 +32,11 @@ interface IAuthenticator {
   event AuthenticatorAdded(address indexed user, uint256 indexed id);
   event AuthenticatorRemoved(address indexed user, uint256 indexed id);
 
+  error SignInExpired();
+  error InvalidSignIn();
+  error InvalidTimeStep();
+  error IdOutOfBounds();
+
   function add(
     SignIn calldata _auth,
     bytes20 _secret,
