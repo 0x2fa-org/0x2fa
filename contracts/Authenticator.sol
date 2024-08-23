@@ -112,6 +112,11 @@ contract Authenticator is IAuthenticator {
     authenticated(_auth)
     returns (AuthenticatorCode[] memory)
   {
+    if (
+      _clientTimestamp > block.timestamp + 5 minutes ||
+      _clientTimestamp < block.timestamp - 5 minutes
+    ) revert InvalidTimestamp();
+
     return _generateCodes(_auth.user, _clientTimestamp);
   }
 
