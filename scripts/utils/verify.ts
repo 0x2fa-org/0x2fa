@@ -3,7 +3,7 @@ import { RunTaskFunction } from "hardhat/types"
 export const verify = async (
   run: RunTaskFunction,
   address: string,
-  constructorArguments: any[]
+  constructorArguments: any[] = []
 ) => {
   while (true) {
     try {
