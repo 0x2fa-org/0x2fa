@@ -5,7 +5,6 @@ import { FC, ReactNode } from "react"
 import { WagmiProvider } from "wagmi"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { config } from "@/lib/wagmi"
-import { ConnectKitProvider } from "connectkit";
 
 const queryClient = new QueryClient()
 
@@ -16,7 +15,7 @@ const Providers: FC<{
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <ConnectKitProvider>{children}</ConnectKitProvider>
+          {children}
         </QueryClientProvider>
       </WagmiProvider>
     </ThemeProvider>
