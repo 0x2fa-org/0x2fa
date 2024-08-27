@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "@/styles/globals.css"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/sonner"
+import Providers from "./providers"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -14,14 +15,13 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* <link rel="manifest" href="/manifest.json" /> */}
       <body
         className={cn(
           "min-h-screen bg-background antialiased",
           inter.className
         )}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
       <Toaster />
     </html>
