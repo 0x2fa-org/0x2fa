@@ -53,25 +53,37 @@ contract Authenticator is IAuthenticator {
     string calldata _issuer,
     uint32 _timeStep
   ) external override authenticated(_auth) {
-    if (_secret == bytes20(0)) revert InvalidSecret();
-    if (bytes(_label).length == 0 || bytes(_label).length > 100)
-      revert InvalidLabel();
-    if (bytes(_issuer).length == 0 || bytes(_issuer).length > 100)
-      revert InvalidIssuer();
-    if (_timeStep == 0 || _timeStep > 3600) revert InvalidTimeStep();
+    _addAuthenticator(_auth, _secret, _label, _issuer, _timeStep);
+  }
 
-    uint256 newId = _userAuthenticatorCount[_auth.user];
-    _userAuthenticators[_auth.user].push(
-      AuthenticatorEntry({
-        id: newId,
-        secret: _secret,
-        label: _label,
-        issuer: _issuer,
-        timeStep: _timeStep
-      })
-    );
-    _userAuthenticatorCount[_auth.user]++;
-    emit AuthenticatorAdded(_auth.user, newId);
+  /// @notice Adds multiple authenticators for a user
+  /// @param _auth The SignIn struct for authentication
+  /// @param _secrets An array of secret keys for the authenticators
+  /// @param _labels An array of labels for the authenticators
+  /// @param _issuers An array of issuers for the authenticators
+  /// @param _timeSteps An array of time steps for TOTP generation
+  function addMultiple(
+    SignIn calldata _auth,
+    bytes20[] calldata _secrets,
+    string[] calldata _labels,
+    string[] calldata _issuers,
+    uint32[] calldata _timeSteps
+  ) external override authenticated(_auth) {
+    if (
+      _secrets.length != _labels.length ||
+      _labels.length != _issuers.length ||
+      _issuers.length != _timeSteps.length
+    ) revert InvalidArrayLengths();
+
+    for (uint256 i = 0; i < _secrets.length; i++) {
+      _addAuthenticator(
+        _auth,
+        _secrets[i],
+        _labels[i],
+        _issuers[i],
+        _timeSteps[i]
+      );
+    }
   }
 
   /// @notice Removes an authenticator for a user
@@ -197,5 +209,34 @@ contract Authenticator is IAuthenticator {
     }
 
     return codes;
+  }
+
+  /// @notice Private function to add a single authenticator
+  function _addAuthenticator(
+    SignIn calldata _auth,
+    bytes20 _secret,
+    string calldata _label,
+    string calldata _issuer,
+    uint32 _timeStep
+  ) private {
+    if (_secret == bytes20(0)) revert InvalidSecret();
+    if (bytes(_label).length == 0 || bytes(_label).length > 100)
+      revert InvalidLabel();
+    if (bytes(_issuer).length == 0 || bytes(_issuer).length > 100)
+      revert InvalidIssuer();
+    if (_timeStep == 0 || _timeStep > 3600) revert InvalidTimeStep();
+
+    uint256 newId = _userAuthenticatorCount[_auth.user];
+    _userAuthenticators[_auth.user].push(
+      AuthenticatorEntry({
+        id: newId,
+        secret: _secret,
+        label: _label,
+        issuer: _issuer,
+        timeStep: _timeStep
+      })
+    );
+    _userAuthenticatorCount[_auth.user]++;
+    emit AuthenticatorAdded(_auth.user, newId);
   }
 }
