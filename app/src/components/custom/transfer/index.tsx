@@ -38,7 +38,6 @@ const TransferAccount: FC = () => {
           <ExportAccount />
           <ImportAccount />
         </div>
-        
       </DrawerContent>
     </Drawer>
   )

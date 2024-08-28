@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/drawer"
 import { FC } from "react"
 import { Button } from "@/components/ui/button"
-import SwitchIcon from "@/components/icons/switch-icon"
+import ExportIcon from "@/components/icons/export-icon"
 
 const ExportAccount: FC = () => {
   return (
@@ -18,7 +18,7 @@ const ExportAccount: FC = () => {
             variant="outline"
             size="icon"
           >
-            <SwitchIcon className="h-4 w-4 text-[#002D2B] dark:text-white" />
+            <ExportIcon className="h-4 w-4 text-[#002D2B] dark:text-white" />
             <span className="sr-only">Transfer</span>
           </Button>
           <p>Export Account</p>
