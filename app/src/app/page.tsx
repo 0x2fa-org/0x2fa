@@ -2,9 +2,9 @@
 
 import { NextPage } from "next"
 import { useConnect } from "wagmi"
-import { ThemeToggle } from "@/components/ui/theme"
 import Header from "@/components/custom/header"
 import Search from "@/components/custom/search"
+import AuthCodes from "@/components/custom/auth-codes"
 
 const Home: NextPage = () => {
   const { connectors, connect } = useConnect()
@@ -13,6 +13,7 @@ const Home: NextPage = () => {
     <div className="max-w-lg mx-auto">
       <Header />
       <Search />
+      <AuthCodes />
     </div>
   )
 
