@@ -19,7 +19,7 @@ const ImportAccount: FC = () => {
             size="icon"
           >
             <ImportIcon className="h-4 w-4 text-[#002D2B] dark:text-white" />
-            <span className="sr-only">Transfer</span>
+            <span className="sr-only">Import Account</span>
           </Button>
           <p>Import Account</p>
         </div>

@@ -1,4 +1,3 @@
-import ExportIcon from "@/components/icons/export-icon"
 import ScanIcon from "@/components/icons/scan-icon"
 import { Button } from "@/components/ui/button"
 import {
@@ -8,6 +7,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { FC } from "react"
+import { Scanner } from "@yudiel/react-qr-scanner"
 
 const ScanQR: FC = () => {
   return (
@@ -27,6 +27,20 @@ const ScanQR: FC = () => {
       </DrawerTrigger>
       <DrawerContent className="h-screen">
         <DrawerHeader />
+        <Scanner
+          allowMultiple={false}
+          styles={{
+            container: {
+              height: "100vh",
+              display: "flex",
+              flexDirection: "column",
+            },
+            video: { objectFit: "cover", width: "100%", flex: "1" },
+            finderBorder: 100,
+          }}
+          components={{ finder: false }}
+          onScan={(result) => console.log(result)}
+        />
       </DrawerContent>
     </Drawer>
   )

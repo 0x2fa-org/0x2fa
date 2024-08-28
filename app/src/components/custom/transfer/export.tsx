@@ -19,7 +19,7 @@ const ExportAccount: FC = () => {
             size="icon"
           >
             <ExportIcon className="h-4 w-4 text-[#002D2B] dark:text-white" />
-            <span className="sr-only">Transfer</span>
+            <span className="sr-only">Export Account</span>
           </Button>
           <p>Export Account</p>
         </div>
