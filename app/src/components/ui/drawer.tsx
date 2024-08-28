@@ -6,6 +6,7 @@ import { Drawer as DrawerPrimitive } from "vaul"
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
 import BackIcon from "../icons/back-icon"
+import { XIcon } from "lucide-react"
 
 const Drawer = ({
   shouldScaleBackground = true,
@@ -59,23 +60,40 @@ DrawerContent.displayName = "DrawerContent"
 
 const DrawerHeader = ({
   className,
+  direction = 'right',
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+}: React.HTMLAttributes<HTMLDivElement> & { direction?: 'bottom' | 'right' }) => (
   <div
     className={cn("grid gap-1.5 p-4 text-center sm:text-left", className)}
     {...props}
   >
-    <DrawerClose className="flex items-center gap-3 p-2">
-      <Button
-        className="rounded-full h-11 w-11 border-none"
-        variant="outline"
-        size="icon"
-      >
-        <BackIcon className="h-3 w-3 text-[#002D2B] dark:text-white" />
-        <span className="sr-only">Back</span>
-      </Button>
-      <p>Back</p>
-    </DrawerClose>
+    {direction === 'bottom' ? (
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold">{props.title}</h1>
+        <DrawerClose className="flex items-center gap-3 p-2">
+          <Button
+            className="rounded-full h-11 w-11 border-none"
+            variant="outline"
+            size="icon"
+          >
+            <XIcon className="h-3 w-3 text-[#002D2B] dark:text-white" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </DrawerClose>
+      </div>
+    ) : (
+      <DrawerClose className="flex items-center gap-3 p-2">
+        <Button
+          className="rounded-full h-11 w-11 border-none"
+          variant="outline"
+          size="icon"
+        >
+          <BackIcon className="h-3 w-3 text-[#002D2B] dark:text-white" />
+          <span className="sr-only">Back</span>
+        </Button>
+        <p>Back</p>
+      </DrawerClose>
+    )}
   </div>
 )
 DrawerHeader.displayName = "DrawerHeader"

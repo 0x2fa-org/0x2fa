@@ -5,6 +5,7 @@ import { useConnect } from "wagmi"
 import Header from "@/components/custom/header"
 import Search from "@/components/custom/search"
 import AuthCodes from "@/components/custom/auth-codes"
+import Controls from "@/components/custom/controls"
 
 const Home: NextPage = () => {
   const { connectors, connect } = useConnect()
@@ -13,6 +14,7 @@ const Home: NextPage = () => {
     <div className="max-w-lg mx-auto">
       <Header />
       <Search />
+      <Controls />
       <AuthCodes />
     </div>
   )
