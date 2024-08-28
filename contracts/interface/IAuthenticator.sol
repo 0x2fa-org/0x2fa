@@ -69,6 +69,9 @@ interface IAuthenticator {
   /// @notice Thrown when an invalid timestamp is provided
   error InvalidTimestamp();
 
+  /// @notice Thrown when the array lengths are not equal
+  error InvalidArrayLengths();
+
   /// @notice Adds a new authenticator
   /// @param _auth The sign-in request
   /// @param _secret The secret for the authenticator
