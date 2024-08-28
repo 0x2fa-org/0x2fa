@@ -2,18 +2,24 @@ import ScanIcon from "@/components/icons/scan-icon"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { FC } from "react"
+import { FC, useState } from "react"
 import { Scanner } from "@yudiel/react-qr-scanner"
 
 const ScanQR: FC = () => {
+  const [open, setOpen] = useState(false)
+
   return (
-    <Drawer direction={"right"}>
-      <DrawerTrigger>
-        <div className="flex items-center gap-3 px-6 pb-6 cursor-pointer">
+    <Drawer direction={"right"} open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
+        <div
+          className="flex items-center gap-3 px-6 pb-6 cursor-pointer"
+          onClick={() => setOpen(true)}
+        >
           <Button
             className="rounded-full h-8 w-8 border-none"
             variant="outline"
@@ -39,7 +45,12 @@ const ScanQR: FC = () => {
             finderBorder: 100,
           }}
           components={{ finder: false }}
-          onScan={(result) => console.log(result)}
+          onScan={(result) => {
+            if (result) {
+              console.log(result)
+              setOpen(false) // Close the drawer when a result is obtained
+            }
+          }}
         />
       </DrawerContent>
     </Drawer>
