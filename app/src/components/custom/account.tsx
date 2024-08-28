@@ -28,7 +28,7 @@ const Account: FC = () => {
       <DialogContent className="max-w-[425px] border-none rounded-3xl sm:rounded-3xl p-0 gap-0">
         <DialogHeader className="py-6 px-6">
           <DialogTitle className="text-[#002220] dark:text-white text-left font-medium">
-            Edit profile
+            Profile
           </DialogTitle>
         </DialogHeader>
         <TransferAccount />
