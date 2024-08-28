@@ -1,12 +1,14 @@
 import { FC } from "react"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { PlusIcon } from "lucide-react"
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTrigger,
-} from "../ui/drawer"
+} from "../../ui/drawer"
+import ScanQR from "./scan-qr"
+import AddManually from "./add-manually"
 
 const Controls: FC = () => {
   return (
@@ -21,6 +23,8 @@ const Controls: FC = () => {
         </DrawerTrigger>
         <DrawerContent className="rounded-t-3xl">
           <DrawerHeader direction="bottom" title="Add" />
+          <ScanQR />
+          <AddManually />
         </DrawerContent>
       </Drawer>
     </div>
