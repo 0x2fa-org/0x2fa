@@ -26,6 +26,13 @@ const ExportAccount: FC = () => {
       </DrawerTrigger>
       <DrawerContent className="h-screen">
         <DrawerHeader />
+        <div className="flex flex-col gap-2 mx-6 my-4">
+          <h1 className="text-2xl font-semibold">Export Account</h1>
+          <p className="text-sm">
+            To export, we&apos;ll create a QR code that store the accounts that you
+            select below
+          </p>
+        </div>
       </DrawerContent>
     </Drawer>
   )

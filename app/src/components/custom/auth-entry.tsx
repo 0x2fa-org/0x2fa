@@ -14,6 +14,8 @@ import {
   DialogClose,
 } from "../ui/dialog"
 import { Button } from "../ui/button"
+import { Toaster } from "../ui/sonner"
+import { toast } from "sonner"
 
 interface AuthEntryProps {
   text: string
@@ -61,8 +63,8 @@ const AuthEntry: FC<AuthEntryProps> = ({ text, onRemove }) => {
               <strong>CANNOT</strong> be undone.
             </p>
             <div className="flex flex-col gap-2 items-center justify-center sm:justify-center p-6 w-full">
-              <Button variant={"destructive"} className="w-full rounded-full h-12">
-                Remove
+              <Button variant={"default"} className="w-full rounded-full h-12">
+                Confirm
               </Button>
               <DialogClose>
                 <Button variant={"link"} className="w-fit p-0 m-0 font-normal">
@@ -87,7 +89,10 @@ const AuthEntry: FC<AuthEntryProps> = ({ text, onRemove }) => {
           <div className="flex items-center justify-between gap-2 w-full">
             <p className="text-5xl font-medium">123 456</p>
             <p className="font-medium">20s</p>
-            <CopyIcon className="w-6 h-6 cursor-pointer" />
+            <CopyIcon
+              className="w-6 h-6 cursor-pointer"
+              onClick={() => toast("Copied")}
+            />
           </div>
         </div>
       </div>
