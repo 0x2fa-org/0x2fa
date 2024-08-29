@@ -8,10 +8,53 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { FC, useState } from "react"
-import { Scanner } from "@yudiel/react-qr-scanner"
+import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner"
+import * as OTPAuth from "otpauth"
 
 const ScanQR: FC = () => {
   const [open, setOpen] = useState(false)
+  const [otpInfo, setOtpInfo] = useState<OTPAuth.TOTP | null>(null)
+
+  const handleScan = (result: IDetectedBarcode[]) => {
+    if (result.length > 0) {
+      const rawValue = result[0].rawValue
+      try {
+        const totp = OTPAuth.URI.parse(rawValue)
+        if (totp instanceof OTPAuth.HOTP) {
+          console.error("Unsupported Auth type [HOTP]")
+          return
+        }
+
+        if (totp.algorithm !== "SHA1") {
+          console.error("Unsupported algorithm. Only SHA1 is supported.")
+          return
+        }
+
+        if (totp.digits !== 6) {
+          console.error("Invalid number of digits. Must be 6.")
+          return
+        }
+
+        if (totp.period < 1 || totp.period > 3600) {
+          console.error("Invalid period. Must be between 1 and 3600 seconds.")
+          return
+        }
+
+        setOtpInfo(totp)
+        setOpen(false)
+        console.log("OTP Info:", {
+          issuer: totp.issuer,
+          label: totp.label,
+          secret: totp.secret.base32,
+          algorithm: totp.algorithm,
+          digits: totp.digits,
+          period: totp.period,
+        })
+      } catch (error) {
+        console.error("Invalid OTP URI:", error)
+      }
+    }
+  }
 
   return (
     <Drawer direction={"right"} open={open} onOpenChange={setOpen}>
@@ -45,12 +88,7 @@ const ScanQR: FC = () => {
             finderBorder: 100,
           }}
           components={{ finder: false }}
-          onScan={(result) => {
-            if (result) {
-              console.log(result)
-              setOpen(false) // Close the drawer when a result is obtained
-            }
-          }}
+          onScan={handleScan}
         />
       </DrawerContent>
     </Drawer>
