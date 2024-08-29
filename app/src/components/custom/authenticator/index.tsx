@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useState, useMemo } from "react"
 import Controls from "../controls"
 import Header from "./header"
 import { Input } from "@/components/ui/input"
@@ -12,7 +12,17 @@ interface Props {
 
 const Authenticator: FC<Props> = ({ auth }) => {
   const [isHidden, setIsHidden] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
   const { data: authenticators, isLoading } = useGenerate({ auth })
+
+  const filteredAuthenticators = useMemo(() => {
+    if (!authenticators) return []
+    return authenticators.filter(
+      (auth) =>
+        auth.issuer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        auth.label.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [authenticators, searchQuery])
 
   return (
     <div className="max-w-lg mx-auto h-screen flex flex-col">
@@ -23,11 +33,13 @@ const Authenticator: FC<Props> = ({ auth }) => {
           placeholder="Search"
           className="rounded-full bg-muted border-none"
           showSearchIcon
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
       <Controls isHidden={isHidden} setIsHidden={setIsHidden} />
-      {authenticators && authenticators.length > 0 ? (
-        authenticators.map((authenticator, index) => (
+      {filteredAuthenticators.length > 0 ? (
+        filteredAuthenticators.map((authenticator, index) => (
           <AuthEntry
             key={index}
             auth={auth}
@@ -40,7 +52,11 @@ const Authenticator: FC<Props> = ({ auth }) => {
           <div className="flex flex-col items-center justify-center flex-grow gap-4">
             <EmptyIcon />
             <p className="text-muted-foreground">
-              No authenticators added yet.
+              {isLoading
+                ? "Loading authenticators..."
+                : searchQuery
+                ? "No matching authenticators found."
+                : "No authenticators added yet."}
             </p>
           </div>
         </div>
