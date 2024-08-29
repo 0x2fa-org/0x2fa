@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react"
 import { Hex } from "viem"
 
-interface SignIn {
-  user: Hex
-  time: number
-}
-
 export function useCheckSignIn(address: Hex | undefined) {
   const [isSignedIn, setIsSignedIn] = useState(false)
+  const [auth, setAuth] = useState<SignIn>()
 
   useEffect(() => {
     const checkSignIn = () => {
@@ -17,8 +13,11 @@ export function useCheckSignIn(address: Hex | undefined) {
       if (!storedSignIn) return setIsSignedIn(false)
 
       try {
-        const { user, time }: SignIn = JSON.parse(storedSignIn)
-        const isValid = user === address && Date.now() / 1000 - time < 86400
+        const storedAuth: SignIn = JSON.parse(storedSignIn)
+        const isValid =
+          storedAuth.user === address &&
+          Date.now() / 1000 - storedAuth.time < 86400
+        setAuth(storedAuth)
         setIsSignedIn(isValid)
       } catch (error) {
         console.error("Error parsing stored sign-in data:", error)
@@ -31,5 +30,5 @@ export function useCheckSignIn(address: Hex | undefined) {
     return () => clearInterval(intervalId)
   }, [address])
 
-  return isSignedIn
+  return { isSignedIn, auth }
 }

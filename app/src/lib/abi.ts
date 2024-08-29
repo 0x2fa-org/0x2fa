@@ -186,7 +186,7 @@ export const ABI: Abi = [
       },
       {
         internalType: "uint32",
-        name: "_timeStep",
+        name: "_timestep",
         type: "uint32",
       },
     ],
@@ -253,7 +253,7 @@ export const ABI: Abi = [
       },
       {
         internalType: "uint32[]",
-        name: "_timeSteps",
+        name: "_timesteps",
         type: "uint32[]",
       },
     ],
@@ -330,7 +330,7 @@ export const ABI: Abi = [
           },
           {
             internalType: "uint32",
-            name: "timeStep",
+            name: "timestep",
             type: "uint32",
           },
         ],
@@ -413,6 +413,11 @@ export const ABI: Abi = [
             name: "issuer",
             type: "string",
           },
+          {
+            internalType: "uint32",
+            name: "timestep",
+            type: "uint32",
+          },
         ],
         internalType: "struct IAuthenticator.AuthenticatorCode[]",
         name: "",
@@ -487,6 +492,11 @@ export const ABI: Abi = [
             internalType: "string",
             name: "issuer",
             type: "string",
+          },
+          {
+            internalType: "uint32",
+            name: "timestep",
+            type: "uint32",
           },
         ],
         internalType: "struct IAuthenticator.AuthenticatorCode[]",

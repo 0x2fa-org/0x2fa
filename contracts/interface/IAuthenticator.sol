@@ -10,7 +10,7 @@ interface IAuthenticator {
     bytes20 secret;
     string label;
     string issuer;
-    uint32 timeStep;
+    uint32 timestep;
   }
 
   /// @notice Represents a generated authenticator code
@@ -19,6 +19,7 @@ interface IAuthenticator {
     uint256 code;
     string label;
     string issuer;
+    uint32 timestep;
   }
 
   /// @notice Represents an EIP-712 signature
@@ -77,13 +78,13 @@ interface IAuthenticator {
   /// @param _secret The secret for the authenticator
   /// @param _label The label for the authenticator
   /// @param _issuer The issuer of the authenticator
-  /// @param _timeStep The time step for code generation
+  /// @param _timestep The time step for code generation
   function add(
     SignIn calldata _auth,
     bytes20 _secret,
     string calldata _label,
     string calldata _issuer,
-    uint32 _timeStep
+    uint32 _timestep
   ) external;
 
   /// @notice Adds multiple authenticators for a user
@@ -91,13 +92,13 @@ interface IAuthenticator {
   /// @param _secrets An array of secret keys for the authenticators
   /// @param _labels An array of labels for the authenticators
   /// @param _issuers An array of issuers for the authenticators
-  /// @param _timeSteps An array of time steps for TOTP generation
+  /// @param _timesteps An array of time steps for TOTP generation
   function addMultiple(
     SignIn calldata _auth,
     bytes20[] calldata _secrets,
     string[] calldata _labels,
     string[] calldata _issuers,
-    uint32[] calldata _timeSteps
+    uint32[] calldata _timesteps
   ) external;
 
   /// @notice Removes an authenticator

@@ -12,13 +12,16 @@ import AddManually from "./add-manually"
 import HideIcon from "@/components/icons/hide-icon"
 import ViewIcon from "@/components/icons/view-icon"
 
-const Controls: FC = () => {
-  const [isHidden, setIsHidden] = useState(false)
+interface Props {
+  isHidden: boolean
+  setIsHidden: (isHidden: boolean) => void
+}
 
+const Controls: FC<Props> = ({ isHidden, setIsHidden }) => {
   return (
     <div className="flex items-center justify-between mx-6 pt-6 pb-3">
       <div className="flex items-center gap-2">
-        <p className="text-sm">Hide Code</p>
+        <p className="text-sm">{!isHidden ? "Hide" : "View"} Codes</p>
         <Button
           className="rounded-full h-8 w-8 border-none"
           variant="outline"

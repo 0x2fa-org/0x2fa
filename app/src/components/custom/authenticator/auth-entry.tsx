@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, useCallback } from "react"
+import { FC, useCallback, useEffect, useState } from "react"
 import { useSwipe } from "@/hooks/useSwipe"
 import { useScrollReset } from "@/hooks/useScrollReset"
 import BinIcon from "@/components/icons/bin-icon"
@@ -12,17 +12,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "../ui/dialog"
-import { Button } from "../ui/button"
-import { Toaster } from "../ui/sonner"
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
+import { formatCode } from "@/lib/utils"
 
 interface AuthEntryProps {
-  text: string
+  isHidden: boolean
+  authenticator: AuthenticatorCode
   onRemove: () => void
 }
 
-const AuthEntry: FC<AuthEntryProps> = ({ text, onRemove }) => {
+const AuthEntry: FC<AuthEntryProps> = ({
+  isHidden,
+  authenticator,
+  onRemove,
+}) => {
+  const [timeLeft, setTimeLeft] = useState<number>(0)
   const {
     swipePosition,
     elementRef,
@@ -38,6 +44,19 @@ const AuthEntry: FC<AuthEntryProps> = ({ text, onRemove }) => {
     onRemove()
     resetSwipe()
   }, [onRemove, resetSwipe])
+
+  useEffect(() => {
+    const updateTimeLeft = () => {
+      const currentTime = Math.floor(Date.now() / 1000)
+      const period = Number(authenticator.timestep)
+      const elapsed = currentTime % period
+      setTimeLeft(period - elapsed)
+    }
+    updateTimeLeft()
+
+    const intervalId = setInterval(updateTimeLeft, 1000)
+    return () => clearInterval(intervalId)
+  }, [authenticator])
 
   return (
     <div className="relative w-full max-w-md mx-auto overflow-hidden bg-destructive">
@@ -85,13 +104,24 @@ const AuthEntry: FC<AuthEntryProps> = ({ text, onRemove }) => {
         style={{ transform: `translateX(-${swipePosition}%)` }}
       >
         <div className="flex flex-col gap-2 w-full">
-          <p className="text-secondary-foreground font-medium">Binance</p>
+          <p className="text-secondary-foreground font-medium">
+            {authenticator.issuer
+              ? `${authenticator.issuer}: ${authenticator.label}`
+              : authenticator.label}
+          </p>
           <div className="flex items-center justify-between gap-2 w-full">
-            <p className="text-5xl font-medium">123 456</p>
-            <p className="font-medium">20s</p>
+            <p className="text-5xl font-medium">
+              {formatCode(authenticator.code, isHidden)}
+            </p>
+            <p className="font-medium">{`${timeLeft}s`}</p>
             <CopyIcon
               className="w-6 h-6 cursor-pointer"
-              onClick={() => toast("Copied")}
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  authenticator.code.toString().padStart(6, "0")
+                )
+                toast("Copied")
+              }}
             />
           </div>
         </div>

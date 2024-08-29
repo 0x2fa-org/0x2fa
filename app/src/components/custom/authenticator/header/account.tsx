@@ -1,16 +1,15 @@
 import { FC } from "react"
-import { Button } from "../ui/button"
-import ProfileIcon from "../icons/profile-icon"
+import { Button } from "../../../ui/button"
+import ProfileIcon from "../../../icons/profile-icon"
 import {
   DialogHeader,
   DialogFooter,
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog"
-import TransferAccount from "./transfer"
+} from "../../../ui/dialog"
+import TransferAccount from "../../transfer"
 
 const Account: FC = () => {
   return (

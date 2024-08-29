@@ -45,15 +45,15 @@ contract Authenticator is IAuthenticator {
   /// @param _secret The secret key for the authenticator
   /// @param _label A label for the authenticator
   /// @param _issuer The issuer of the authenticator
-  /// @param _timeStep The time step for TOTP generation
+  /// @param _timestep The time step for TOTP generation
   function add(
     SignIn calldata _auth,
     bytes20 _secret,
     string calldata _label,
     string calldata _issuer,
-    uint32 _timeStep
+    uint32 _timestep
   ) external override authenticated(_auth) {
-    _addAuthenticator(_auth, _secret, _label, _issuer, _timeStep);
+    _addAuthenticator(_auth, _secret, _label, _issuer, _timestep);
   }
 
   /// @notice Adds multiple authenticators for a user
@@ -61,18 +61,18 @@ contract Authenticator is IAuthenticator {
   /// @param _secrets An array of secret keys for the authenticators
   /// @param _labels An array of labels for the authenticators
   /// @param _issuers An array of issuers for the authenticators
-  /// @param _timeSteps An array of time steps for TOTP generation
+  /// @param _timesteps An array of time steps for TOTP generation
   function addMultiple(
     SignIn calldata _auth,
     bytes20[] calldata _secrets,
     string[] calldata _labels,
     string[] calldata _issuers,
-    uint32[] calldata _timeSteps
+    uint32[] calldata _timesteps
   ) external override authenticated(_auth) {
     if (
       _secrets.length != _labels.length ||
       _labels.length != _issuers.length ||
-      _issuers.length != _timeSteps.length
+      _issuers.length != _timesteps.length
     ) revert InvalidArrayLengths();
 
     for (uint256 i = 0; i < _secrets.length; i++) {
@@ -81,7 +81,7 @@ contract Authenticator is IAuthenticator {
         _secrets[i],
         _labels[i],
         _issuers[i],
-        _timeSteps[i]
+        _timesteps[i]
       );
     }
   }
@@ -197,11 +197,12 @@ contract Authenticator is IAuthenticator {
         id: authenticators[i].id,
         code: TOTP_sha1(
           abi.encodePacked(authenticators[i].secret),
-          authenticators[i].timeStep,
+          authenticators[i].timestep,
           uint32(_timestamp)
         ),
         label: authenticators[i].label,
-        issuer: authenticators[i].issuer
+        issuer: authenticators[i].issuer,
+        timestep: authenticators[i].timestep
       });
       unchecked {
         ++i;
@@ -217,14 +218,14 @@ contract Authenticator is IAuthenticator {
     bytes20 _secret,
     string calldata _label,
     string calldata _issuer,
-    uint32 _timeStep
+    uint32 _timestep
   ) private {
     if (_secret == bytes20(0)) revert InvalidSecret();
     if (bytes(_label).length == 0 || bytes(_label).length > 100)
       revert InvalidLabel();
     if (bytes(_issuer).length == 0 || bytes(_issuer).length > 100)
       revert InvalidIssuer();
-    if (_timeStep == 0 || _timeStep > 3600) revert InvalidTimeStep();
+    if (_timestep == 0 || _timestep > 3600) revert InvalidTimeStep();
 
     uint256 newId = _userAuthenticatorCount[_auth.user];
     _userAuthenticators[_auth.user].push(
@@ -233,7 +234,7 @@ contract Authenticator is IAuthenticator {
         secret: _secret,
         label: _label,
         issuer: _issuer,
-        timeStep: _timeStep
+        timestep: _timestep
       })
     );
     _userAuthenticatorCount[_auth.user]++;

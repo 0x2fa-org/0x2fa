@@ -1,7 +1,7 @@
 import { FC } from "react"
-import { ThemeToggle } from "../ui/theme"
+import { ThemeToggle } from "../../../ui/theme"
 import Account from "./account"
-import Logo from "../icons/logo"
+import Logo from "../../../icons/logo"
 
 const Header: FC = () => {
   return (

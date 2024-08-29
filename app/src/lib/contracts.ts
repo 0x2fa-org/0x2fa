@@ -13,7 +13,7 @@ export const AUTHENTICATOR_CONTRACT: Record<
     abi: ABI,
   },
   [sapphireTestnet.id]: {
-    address: "0x98668B1aF5899D2f312E6E728027fe50545130D4",
+    address: "0x568682B2F3A09bAA7A3336B389Ac01C15175c9D7",
     abi: ABI,
   },
   [sapphireLocalnet.id]: {

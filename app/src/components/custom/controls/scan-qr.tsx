@@ -9,7 +9,7 @@ import {
 import { FC, useState } from "react"
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner"
 import * as OTPAuth from "otpauth"
-import { useAdd } from "@/hooks/useAdd"
+import { useAdd } from "@/hooks/authenticator/useAdd"
 import { useAccount } from "wagmi"
 import { toast } from "sonner"
 import { toByte20 } from "@/lib/utils"
@@ -51,7 +51,7 @@ const ScanQR: FC = () => {
           secret: toByte20(totp.secret.base32),
           label: totp.label,
           issuer: totp.issuer,
-          period: totp.period,
+          timestep: totp.period,
         })
       } catch (error) {
         toast.error("Failed to add authenticator")

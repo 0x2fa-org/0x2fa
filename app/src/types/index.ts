@@ -1,3 +1,4 @@
+import { UseQueryOptions } from "@tanstack/react-query"
 import { Hex } from "viem"
 
 declare global {
@@ -16,7 +17,27 @@ declare global {
     secret: Hex // bytes20
     label: string
     issuer: string
-    period: number
+    timestep: number
+  }
+
+  type AuthenticatorCode = {
+    code: bigint
+    index: bigint
+    issuer: string
+    label: string
+    timestep: bigint
+  }
+
+  type UseGenerateOptions = Omit<
+    UseQueryOptions<
+      unknown,
+      Error,
+      AuthenticatorCode[],
+      readonly [string, SignIn | undefined]
+    >,
+    "queryKey" | "queryFn"
+  > & {
+    auth: SignIn | undefined
   }
 }
 
