@@ -86,6 +86,20 @@ interface IAuthenticator {
     uint32 _timeStep
   ) external;
 
+  /// @notice Adds multiple authenticators for a user
+  /// @param _auth The SignIn struct for authentication
+  /// @param _secrets An array of secret keys for the authenticators
+  /// @param _labels An array of labels for the authenticators
+  /// @param _issuers An array of issuers for the authenticators
+  /// @param _timeSteps An array of time steps for TOTP generation
+  function addMultiple(
+    SignIn calldata _auth,
+    bytes20[] calldata _secrets,
+    string[] calldata _labels,
+    string[] calldata _issuers,
+    uint32[] calldata _timeSteps
+  ) external;
+
   /// @notice Removes an authenticator
   /// @param _auth The sign-in request
   /// @param _id The ID of the authenticator to remove
