@@ -20,7 +20,7 @@ export function useSignIn() {
   const contract = AUTHENTICATOR_CONTRACT[chainId]
 
   const domain = {
-    name: "Authenticator.SignIn",
+    name: "Authenticator",
     version: "1",
     chainId: chainId,
     verifyingContract: contract.address,

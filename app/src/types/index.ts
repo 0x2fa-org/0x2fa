@@ -16,7 +16,7 @@ declare global {
     secret: Hex // bytes20
     label: string
     issuer: string
-    timestep: number
+    period: number
   }
 }
 

@@ -15,13 +15,13 @@ export function useAdd() {
       secret,
       label,
       issuer,
-      timestep,
+      period,
     }: AddParams) => {
       const result = await writeContract(config, {
         address: contract.address,
         abi: contract.abi,
         functionName: "add",
-        args: [auth, secret, label, issuer, timestep],
+        args: [auth, secret, label, issuer, period],
       })
 
       if (!result) throw new Error("Failed to set OTP")
@@ -29,7 +29,7 @@ export function useAdd() {
       return result
     },
     onError: (error: Error) => {
-      console.error("add error:", error)
+      console.error("Add error:", error)
       toast.error(error.message)
     },
     onSuccess: (result) => {

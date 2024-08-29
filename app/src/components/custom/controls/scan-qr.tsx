@@ -2,7 +2,6 @@ import ScanIcon from "@/components/icons/scan-icon"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTrigger,
@@ -10,48 +9,52 @@ import {
 import { FC, useState } from "react"
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner"
 import * as OTPAuth from "otpauth"
+import { useAdd } from "@/hooks/useAdd"
+import { useAccount } from "wagmi"
+import { toast } from "sonner"
+import { toByte20 } from "@/lib/utils"
 
 const ScanQR: FC = () => {
   const [open, setOpen] = useState(false)
-  const [otpInfo, setOtpInfo] = useState<OTPAuth.TOTP | null>(null)
+  const { address } = useAccount()
+  const addMutation = useAdd()
 
-  const handleScan = (result: IDetectedBarcode[]) => {
-    if (result.length > 0) {
+  const handleScan = async (result: IDetectedBarcode[]) => {
+    if (result.length > 0 && !addMutation.isPending) {
       const rawValue = result[0].rawValue
       try {
         const totp = OTPAuth.URI.parse(rawValue)
-        if (totp instanceof OTPAuth.HOTP) {
-          console.error("Unsupported Auth type [HOTP]")
-          return
-        }
+        if (!(totp instanceof OTPAuth.TOTP))
+          return toast.error("Unsupported Auth type. Only TOTP is supported.")
 
-        if (totp.algorithm !== "SHA1") {
-          console.error("Unsupported algorithm. Only SHA1 is supported.")
-          return
-        }
+        if (totp.algorithm !== "SHA1")
+          return toast.error("Unsupported algorithm. Only SHA1 is supported.")
 
-        if (totp.digits !== 6) {
-          console.error("Invalid number of digits. Must be 6.")
-          return
-        }
+        if (totp.digits !== 6)
+          return toast.error("Invalid number of digits. Must be 6.")
 
-        if (totp.period < 1 || totp.period > 3600) {
-          console.error("Invalid period. Must be between 1 and 3600 seconds.")
-          return
-        }
+        if (totp.period < 1 || totp.period > 3600)
+          return toast.error(
+            "Invalid period. Must be between 1 and 3600 seconds."
+          )
 
-        setOtpInfo(totp)
+        const lastSignInData = localStorage.getItem(`lastSignIn_${address}`)
+        if (!lastSignInData)
+          return toast.error("No sign-in data found. Please sign in first.")
+
+        const auth = JSON.parse(lastSignInData)
+
         setOpen(false)
-        console.log("OTP Info:", {
-          issuer: totp.issuer,
+
+        await addMutation.mutateAsync({
+          auth,
+          secret: toByte20(totp.secret.base32),
           label: totp.label,
-          secret: totp.secret.base32,
-          algorithm: totp.algorithm,
-          digits: totp.digits,
+          issuer: totp.issuer,
           period: totp.period,
         })
       } catch (error) {
-        console.error("Invalid OTP URI:", error)
+        toast.error("Failed to add authenticator")
       }
     }
   }
@@ -87,7 +90,7 @@ const ScanQR: FC = () => {
             video: { objectFit: "cover", width: "100%", flex: "1" },
             finderBorder: 100,
           }}
-          components={{ finder: false }}
+          components={{ finder: false, tracker: () => false }}
           onScan={handleScan}
         />
       </DrawerContent>

@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@ctrl/ts-base32':
+        specifier: ^4.0.0
+        version: 4.0.0
     devDependencies:
       '@nomicfoundation/hardhat-toolbox-viem':
         specifier: ^3.0.0
@@ -54,6 +58,10 @@ packages:
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
+
+  '@ctrl/ts-base32@4.0.0':
+    resolution: {integrity: sha512-duhK38dxPZUklivdRiowSu1YJhROWe0ZtNeiaGkS7pt/Imz0wXGXnGnBt+PCslhTzH1vPJgnAflmuInrLEWmMg==}
+    engines: {node: '>=18'}
 
   '@ethereumjs/rlp@4.0.1':
     resolution: {integrity: sha512-tqsQiBQDQdmPWE1xkkBq4rlSW5QZpLOUJ5RJh2/9fug+q9tnUhuZoVLk7s0scUIKTOzEtR72DFBXI4WiZcMpvw==}
@@ -2048,6 +2056,8 @@ snapshots:
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
+
+  '@ctrl/ts-base32@4.0.0': {}
 
   '@ethereumjs/rlp@4.0.1': {}
 

@@ -19,5 +19,8 @@
     "hardhat-contract-sizer": "^2.10.0",
     "prettier": "^3.3.3",
     "viem": "^2.20.0"
+  },
+  "dependencies": {
+    "@ctrl/ts-base32": "^4.0.0"
   }
 }
