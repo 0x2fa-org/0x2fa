@@ -2,7 +2,7 @@ import { FC, useState } from "react"
 import Controls from "../controls"
 import Header from "./header"
 import { Input } from "@/components/ui/input"
-import { useGenerate } from "@/hooks/authenticator/useGenerate"
+import { useGenerate } from "@/hooks/authenticator/use-generate"
 import AuthEntry from "./auth-entry"
 import EmptyIcon from "@/components/icons/empty-icon"
 

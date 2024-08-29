@@ -1,4 +1,4 @@
-import { useSignIn } from "@/hooks/useSignIn"
+import { useSignIn } from "@/hooks/use-signin"
 import { FC } from "react"
 import { Button } from "../ui/button"
 import { useAccount } from "wagmi"

@@ -1,8 +1,8 @@
 "use client"
 
 import { FC, useCallback, useEffect, useState } from "react"
-import { useSwipe } from "@/hooks/useSwipe"
-import { useScrollReset } from "@/hooks/useScrollReset"
+import { useSwipe } from "@/hooks/use-swipe"
+import { useScrollReset } from "@/hooks/use-scroll-reset"
 import BinIcon from "@/components/icons/bin-icon"
 import CopyIcon from "@/components/icons/copy-icon"
 import {
@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { copyToClipboard, formatCode } from "@/lib/utils"
-import { useRemove } from "@/hooks/authenticator/useRemove"
+import { useRemove } from "@/hooks/authenticator/use-remove"
 import LoadingIcon from "@/components/icons/loading-icon"
 
 interface AuthEntryProps {

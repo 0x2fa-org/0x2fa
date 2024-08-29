@@ -9,7 +9,7 @@ import {
 import { FC, useState } from "react"
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner"
 import * as OTPAuth from "otpauth"
-import { useAdd } from "@/hooks/authenticator/useAdd"
+import { useAdd } from "@/hooks/authenticator/use-add"
 import { useAccount } from "wagmi"
 import { toast } from "sonner"
 import { toByte20 } from "@/lib/utils"
