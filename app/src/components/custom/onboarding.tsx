@@ -5,6 +5,7 @@ import { Button } from "../ui/button"
 import BackIcon from "../icons/back-icon"
 import { useConnect } from "wagmi"
 import Loading from "./loading"
+import LoadingIcon from "../icons/loading-icon"
 
 const Onboarding: FC = () => {
   const { connectors, connect, isPending, error } = useConnect()
@@ -25,7 +26,11 @@ const Onboarding: FC = () => {
           onClick={() => connect({ connector: connectors[0] })}
         >
           Connect Wallet{" "}
-          <BackIcon className="w-3 h-3 text-primary-foreground rotate-180" />
+          {isPending ? (
+            <LoadingIcon />
+          ) : (
+            <BackIcon className="w-3 h-3 text-primary-foreground rotate-180" />
+          )}
         </Button>
       </div>
     </div>

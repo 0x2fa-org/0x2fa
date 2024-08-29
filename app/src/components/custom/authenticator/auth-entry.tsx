@@ -15,20 +15,20 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { formatCode } from "@/lib/utils"
+import { copyToClipboard, formatCode } from "@/lib/utils"
+import { useRemove } from "@/hooks/authenticator/useRemove"
+import LoadingIcon from "@/components/icons/loading-icon"
 
 interface AuthEntryProps {
+  auth: SignIn
   isHidden: boolean
   authenticator: AuthenticatorCode
-  onRemove: () => void
 }
 
-const AuthEntry: FC<AuthEntryProps> = ({
-  isHidden,
-  authenticator,
-  onRemove,
-}) => {
+const AuthEntry: FC<AuthEntryProps> = ({ auth, isHidden, authenticator }) => {
   const [timeLeft, setTimeLeft] = useState<number>(0)
+  const removeMutation = useRemove()
+
   const {
     swipePosition,
     elementRef,
@@ -40,10 +40,13 @@ const AuthEntry: FC<AuthEntryProps> = ({
 
   useScrollReset(resetSwipe)
 
-  const handleRemove = useCallback(() => {
-    onRemove()
+  const handleRemove = useCallback(async () => {
     resetSwipe()
-  }, [onRemove, resetSwipe])
+  }, [resetSwipe, auth, authenticator.id, removeMutation])
+
+  const remove = useCallback(async () => {
+    await removeMutation.mutateAsync({ auth, id: authenticator.id })
+  }, [auth, authenticator.id, removeMutation])
 
   useEffect(() => {
     const updateTimeLeft = () => {
@@ -82,8 +85,14 @@ const AuthEntry: FC<AuthEntryProps> = ({
               <strong>CANNOT</strong> be undone.
             </p>
             <div className="flex flex-col gap-2 items-center justify-center sm:justify-center p-6 w-full">
-              <Button variant={"default"} className="w-full rounded-full h-12">
+              <Button
+                variant={"default"}
+                className="w-full rounded-full h-12 gap-2"
+                onClick={remove}
+                disabled={removeMutation.isPending}
+              >
                 Confirm
+                {removeMutation.isPending ? <LoadingIcon /> : undefined}
               </Button>
               <DialogClose>
                 <Button variant={"link"} className="w-fit p-0 m-0 font-normal">
@@ -117,10 +126,8 @@ const AuthEntry: FC<AuthEntryProps> = ({
             <CopyIcon
               className="w-6 h-6 cursor-pointer"
               onClick={() => {
-                navigator.clipboard.writeText(
-                  authenticator.code.toString().padStart(6, "0")
-                )
-                toast("Copied")
+                copyToClipboard(authenticator.code.toString().padStart(6, "0"))
+                toast.success("Copied to clipboard")
               }}
             />
           </div>

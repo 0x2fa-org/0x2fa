@@ -22,7 +22,7 @@ declare global {
 
   type AuthenticatorCode = {
     code: bigint
-    index: bigint
+    id: bigint
     issuer: string
     label: string
     timestep: bigint

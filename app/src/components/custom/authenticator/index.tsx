@@ -30,9 +30,9 @@ const Authenticator: FC<Props> = ({ auth }) => {
         authenticators.map((authenticator, index) => (
           <AuthEntry
             key={index}
+            auth={auth}
             isHidden={isHidden}
             authenticator={authenticator}
-            onRemove={() => {}}
           />
         ))
       ) : (
