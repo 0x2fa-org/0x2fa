@@ -10,8 +10,12 @@ import {
   DialogTrigger,
 } from "../../../ui/dialog"
 import TransferAccount from "../../transfer"
+import { useDisconnect } from "wagmi"
+import DisconnectIcon from "@/components/icons/disconnect-icon"
 
 const Account: FC = () => {
+  const { disconnect } = useDisconnect()
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -31,6 +35,17 @@ const Account: FC = () => {
           </DialogTitle>
         </DialogHeader>
         <TransferAccount />
+        <div className="flex items-center gap-3 p-6 border-t border-[#EEEEEE] dark:border-[#002827] cursor-pointer" onClick={() => disconnect()}>
+          <Button
+            className="rounded-full h-8 w-8 border-none"
+            variant="outline"
+            size="icon"
+          >
+            <DisconnectIcon className="h-4 w-4 text-[#002D2B] dark:text-white" />
+            <span className="sr-only">Transfer</span>
+          </Button>
+          <p>Disconnect Wallet</p>
+        </div>
         <DialogFooter className="flex flex-row gap-4 items-center justify-center sm:justify-center border-t border-[#EEEEEE] dark:border-[#002827] py-2">
           <Button
             variant={"link"}
