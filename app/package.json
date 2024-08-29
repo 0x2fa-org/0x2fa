@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
     "@oasisprotocol/sapphire-paratime": "2.0.0-alpha.0",
     "@oasisprotocol/sapphire-viem-v2": "2.0.0-alpha.0",
     "@oasisprotocol/sapphire-wagmi-v2": "2.0.0-alpha.0",
@@ -28,6 +29,7 @@
     "otpauth": "^9.3.2",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.53.0",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
