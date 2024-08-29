@@ -74,11 +74,21 @@ const config = {
           "75%": { transform: "rotate(270deg)" },
           "100%": { transform: "rotate(360deg)" },
         },
+        moveToTop: {
+          "0%": { top: "50%", transform: "translate(-50%, -50%)" },
+          "100%": { top: "15%", transform: "translate(-50%, 0)" },
+        },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "rotate-360": "rotate-360 1s steps(4) 1",
+        "move-to-top": "moveToTop 1.5s ease-in-out forwards",
+        "fade-in-delayed": "fadeIn 0.5s ease-out forwards 1.5s",
       },
     },
   },
