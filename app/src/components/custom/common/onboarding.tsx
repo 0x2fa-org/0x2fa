@@ -1,11 +1,11 @@
 import { FC } from "react"
-import Logo from "../icons/logo"
-import LogoHollow from "../icons/logo-hollow"
-import { Button } from "../ui/button"
-import BackIcon from "../icons/back-icon"
+import Logo from "../../icons/logo"
+import LogoHollow from "../../icons/logo-hollow"
+import { Button } from "../../ui/button"
+import BackIcon from "../../icons/back-icon"
 import { useConnect } from "wagmi"
 import Loading from "./loading"
-import LoadingIcon from "../icons/loading-icon"
+import LoadingIcon from "../../icons/loading-icon"
 
 const Onboarding: FC = () => {
   const { connectors, connect, isPending, error } = useConnect()

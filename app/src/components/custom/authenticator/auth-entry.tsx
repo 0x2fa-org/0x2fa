@@ -1,8 +1,8 @@
 "use client"
 
 import { FC, useCallback, useEffect, useState } from "react"
-import { useSwipe } from "@/hooks/use-swipe"
-import { useScrollReset } from "@/hooks/use-scroll-reset"
+import { useSwipe } from "@/hooks/ui/use-swipe"
+import { useScrollReset } from "@/hooks/ui/use-scroll-reset"
 import BinIcon from "@/components/icons/bin-icon"
 import CopyIcon from "@/components/icons/copy-icon"
 import {

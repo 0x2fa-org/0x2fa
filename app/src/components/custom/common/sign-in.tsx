@@ -1,10 +1,10 @@
-import { useSignIn } from "@/hooks/use-signin"
+import { useSignIn } from "@/hooks/auth/use-signin"
 import { FC } from "react"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { useAccount } from "wagmi"
-import WarningIcon from "../icons/warning-icon"
-import BackIcon from "../icons/back-icon"
-import LoadingIcon from "../icons/loading-icon"
+import WarningIcon from "../../icons/warning-icon"
+import BackIcon from "../../icons/back-icon"
+import LoadingIcon from "../../icons/loading-icon"
 
 const SignIn: FC = () => {
   const { address } = useAccount()
@@ -33,7 +33,11 @@ const SignIn: FC = () => {
         disabled={signInMutation.isPending}
       >
         Sign In
-        {signInMutation.isPending ? <LoadingIcon /> : <BackIcon className="w-3 h-3 rotate-180" />}
+        {signInMutation.isPending ? (
+          <LoadingIcon />
+        ) : (
+          <BackIcon className="w-3 h-3 rotate-180" />
+        )}
       </Button>
     </div>
   )

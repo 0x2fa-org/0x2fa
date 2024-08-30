@@ -1,5 +1,5 @@
 import { FC } from "react"
-import Logo from "../icons/logo"
+import Logo from "../../icons/logo"
 
 const Loading: FC = () => {
   return (
