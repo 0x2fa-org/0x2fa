@@ -153,7 +153,11 @@ const ExportAccount: FC<Props> = ({ auth, authenticators }) => {
             </div>
             {exportUri && (
               <div className="flex justify-center items-center py-12">
-                <QRCode value={exportUri} size={256} />
+                <QRCode
+                  className="rounded-lg border-white border-8"
+                  value={exportUri}
+                  size={256}
+                />
               </div>
             )}
             <DrawerClose>
