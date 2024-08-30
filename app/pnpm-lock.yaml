@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ctrl/ts-base32':
+        specifier: ^4.0.0
+        version: 4.0.0
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.9.0(react-hook-form@7.53.0(react@18.3.1))
@@ -860,6 +863,10 @@ packages:
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
+
+  '@ctrl/ts-base32@4.0.0':
+    resolution: {integrity: sha512-duhK38dxPZUklivdRiowSu1YJhROWe0ZtNeiaGkS7pt/Imz0wXGXnGnBt+PCslhTzH1vPJgnAflmuInrLEWmMg==}
+    engines: {node: '>=18'}
 
   '@eslint-community/eslint-utils@4.4.0':
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -6896,6 +6903,8 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
     optional: true
+
+  '@ctrl/ts-base32@4.0.0': {}
 
   '@eslint-community/eslint-utils@4.4.0(eslint@8.57.0)':
     dependencies:
