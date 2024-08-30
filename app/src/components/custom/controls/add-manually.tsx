@@ -60,7 +60,6 @@ const AddManually: FC = () => {
       timestep: 30,
     })
   }
-
   return (
     <Drawer direction={"right"}>
       <DrawerTrigger>

@@ -26,7 +26,7 @@ const Authenticator: FC<Props> = ({ auth }) => {
 
   return (
     <div className="max-w-lg mx-auto h-screen flex flex-col">
-      <Header />
+      <Header authenticators={authenticators} />
       <div className="flex items-center justify-between px-6">
         <Input
           type="text"

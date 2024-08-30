@@ -3,7 +3,11 @@ import { ThemeToggle } from "../../../ui/theme"
 import Account from "./account"
 import Logo from "../../../icons/logo"
 
-const Header: FC = () => {
+interface Props {
+  authenticators: AuthenticatorCode[] | undefined
+}
+
+const Header: FC<Props> = ({ authenticators }) => {
   return (
     <header className="flex justify-between items-center p-6 w-full">
       <div className="flex items-center gap-2">
@@ -12,7 +16,7 @@ const Header: FC = () => {
       </div>
       <div className="flex items-center gap-3.5">
         <ThemeToggle />
-        <Account />
+        <Account authenticators={authenticators} />
       </div>
     </header>
   )

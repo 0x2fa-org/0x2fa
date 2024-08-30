@@ -58,7 +58,6 @@ const ScanQR: FC = () => {
       }
     }
   }
-
   return (
     <Drawer direction={"right"} open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>

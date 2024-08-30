@@ -13,7 +13,11 @@ import TransferAccount from "../../transfer"
 import { useDisconnect } from "wagmi"
 import DisconnectIcon from "@/components/icons/disconnect-icon"
 
-const Account: FC = () => {
+interface Props {
+  authenticators: AuthenticatorCode[] | undefined
+}
+
+const Account: FC<Props> = ({authenticators}) => {
   const { disconnect } = useDisconnect()
 
   return (
@@ -34,7 +38,7 @@ const Account: FC = () => {
             Profile
           </DialogTitle>
         </DialogHeader>
-        <TransferAccount />
+        <TransferAccount authenticators={authenticators} />
         <div className="flex items-center gap-3 p-6 border-t border-[#EEEEEE] dark:border-[#002827] cursor-pointer" onClick={() => disconnect()}>
           <Button
             className="rounded-full h-8 w-8 border-none"

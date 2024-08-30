@@ -10,7 +10,11 @@ import { Button } from "@/components/ui/button"
 import ExportAccount from "./export"
 import ImportAccount from "./import"
 
-const TransferAccount: FC = () => {
+interface Props {
+  authenticators: AuthenticatorCode[] | undefined
+}
+
+const TransferAccount: FC<Props> = ({ authenticators }) => {
   return (
     <Drawer direction={"right"}>
       <DrawerTrigger>
@@ -35,7 +39,7 @@ const TransferAccount: FC = () => {
           </p>
         </div>
         <div className="flex flex-col gap-2">
-          <ExportAccount />
+          <ExportAccount authenticators={authenticators} />
           <ImportAccount />
         </div>
       </DrawerContent>
