@@ -20,6 +20,14 @@ declare global {
     timestep: number
   }
 
+  type AddMultipleParams = {
+    auth: SignIn
+    secrets: Hex[]
+    labels: string[]
+    issuers: string[]
+    timesteps: number[]
+  }
+
   type AuthenticatorCode = {
     code: bigint
     id: bigint
@@ -38,6 +46,12 @@ declare global {
     "queryKey" | "queryFn"
   > & {
     auth: SignIn | undefined
+  }
+
+  type ImportParse = {
+    secret: string
+    label: string
+    issuer: string
   }
 }
 
