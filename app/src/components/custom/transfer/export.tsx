@@ -3,23 +3,28 @@ import {
   DrawerTrigger,
   DrawerContent,
   DrawerHeader,
+  DrawerClose,
 } from "@/components/ui/drawer"
-import { FC, useState, useEffect } from "react"
+import { FC, useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import ExportIcon from "@/components/icons/export-icon"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import BackIcon from "@/components/icons/back-icon"
 import QRCode from "react-qr-code"
+import { useExport } from "@/hooks/authenticator/use-export"
+import { generateMigrationUri } from "@/lib/migration"
 
 interface Props {
+  auth: SignIn
   authenticators: AuthenticatorCode[] | undefined
 }
 
-const ExportAccount: FC<Props> = ({ authenticators }) => {
+const ExportAccount: FC<Props> = ({ auth, authenticators }) => {
   const [selectedAuthenticators, setSelectedAuthenticators] = useState<
     Set<number>
   >(new Set())
+  const { data: exportData } = useExport({ auth })
 
   useEffect(() => {
     if (authenticators) {
@@ -28,6 +33,15 @@ const ExportAccount: FC<Props> = ({ authenticators }) => {
       )
     }
   }, [authenticators])
+
+  const exportUri = useMemo(() => {
+    if (exportData && authenticators) {
+      const selectedData = Array.from(selectedAuthenticators).map(
+        (index) => exportData[index]
+      )
+      return generateMigrationUri(selectedData)
+    }
+  }, [exportData, authenticators, selectedAuthenticators])
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -137,9 +151,21 @@ const ExportAccount: FC<Props> = ({ authenticators }) => {
                 selected
               </p>
             </div>
-            <div className="flex justify-center items-center py-12">
-              <QRCode value={"export-string-here"} size={256} />
-            </div>
+            {exportUri && (
+              <div className="flex justify-center items-center py-12">
+                <QRCode value={exportUri} size={256} />
+              </div>
+            )}
+            <DrawerClose>
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full px-6">
+                <Button
+                  className="h-14 rounded-full w-full"
+                  disabled={selectedAuthenticators.size === 0}
+                >
+                  Done
+                </Button>
+              </div>
+            </DrawerClose>
           </DrawerContent>
         </Drawer>
       </DrawerContent>

@@ -10,12 +10,17 @@ import { Button } from "@/components/ui/button"
 import ImportIcon from "@/components/icons/import-icon"
 import BackIcon from "@/components/icons/back-icon"
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner"
-import { parseOtpMigrationUri, toByte20 } from "@/lib/utils"
+import { parseMigrationUri } from "@/lib/migration"
 import { toast } from "sonner"
 import { useAddMultiple } from "@/hooks/authenticator/use-add-multiple"
 import { useAccount } from "wagmi"
+import { toByte20 } from "@/lib/utils"
 
-const ImportAccount: FC = () => {
+interface Props {
+  auth: SignIn
+}
+
+const ImportAccount: FC<Props> = ({ auth }) => {
   const [open, setOpen] = useState(false)
   const { address } = useAccount()
   const addMultipleMutation = useAddMultiple()
@@ -23,17 +28,11 @@ const ImportAccount: FC = () => {
   const handleScan = async (result: IDetectedBarcode[]) => {
     if (result.length <= 0 || addMultipleMutation.isPending) return
 
-    const parsedData = parseOtpMigrationUri(result[0].rawValue)
+    const parsedData = parseMigrationUri(result[0].rawValue)
     if (!parsedData || parsedData.length === 0) {
       setOpen(false)
       return toast.error("Invalid QR code")
     }
-
-    const lastSignInData = localStorage.getItem(`lastSignIn_${address}`)
-    if (!lastSignInData)
-      return toast.error("No sign-in data found. Please sign in first.")
-
-    const auth = JSON.parse(lastSignInData)
 
     setOpen(false)
 

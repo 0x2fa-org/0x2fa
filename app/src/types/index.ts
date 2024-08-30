@@ -36,11 +36,31 @@ declare global {
     timestep: bigint
   }
 
+  type AuthenticatorExport = {
+    id: bigint
+    secret: Hex
+    label: string
+    issuer: string
+    timestep: bigint
+  }
+
   type UseGenerateOptions = Omit<
     UseQueryOptions<
       unknown,
       Error,
       AuthenticatorCode[],
+      readonly [string, SignIn | undefined]
+    >,
+    "queryKey" | "queryFn"
+  > & {
+    auth: SignIn | undefined
+  }
+
+  type UseExportOptions = Omit<
+    UseQueryOptions<
+      unknown,
+      Error,
+      AuthenticatorExport[],
       readonly [string, SignIn | undefined]
     >,
     "queryKey" | "queryFn"
