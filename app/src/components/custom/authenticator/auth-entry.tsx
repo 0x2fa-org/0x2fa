@@ -35,6 +35,9 @@ const AuthEntry: FC<AuthEntryProps> = ({ auth, isHidden, authenticator }) => {
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
     resetSwipe,
   } = useSwipe()
 
@@ -62,7 +65,7 @@ const AuthEntry: FC<AuthEntryProps> = ({ auth, isHidden, authenticator }) => {
   }, [authenticator])
 
   return (
-    <div className="relative w-full max-w-md mx-auto overflow-hidden bg-destructive">
+    <div className="relative w-full overflow-hidden bg-destructive">
       <div
         className="absolute inset-y-0 right-0 w-1/4 flex items-center justify-center bg-destructive cursor-pointer"
         onClick={handleRemove}
@@ -109,6 +112,9 @@ const AuthEntry: FC<AuthEntryProps> = ({ auth, isHidden, authenticator }) => {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
         className="relative z-10 flex items-center px-6 py-5 bg-background text-foreground shadow-md border-b border-[#E9E9E9] dark:border-[#002827] w-full transition-transform duration-300 ease-out"
         style={{ transform: `translateX(-${swipePosition}%)` }}
       >
