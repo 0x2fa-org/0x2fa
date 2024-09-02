@@ -39,14 +39,16 @@ const Authenticator: FC<Props> = ({ auth }) => {
       </div>
       <Controls isHidden={isHidden} setIsHidden={setIsHidden} />
       {filteredAuthenticators.length > 0 ? (
-        filteredAuthenticators.map((authenticator, index) => (
-          <AuthEntry
-            key={index}
-            auth={auth}
-            isHidden={isHidden}
-            authenticator={authenticator}
-          />
-        ))
+        <div className="flex-grow overflow-y-auto">
+          {filteredAuthenticators.map((authenticator, index) => (
+            <AuthEntry
+              key={index}
+              auth={auth}
+              isHidden={isHidden}
+              authenticator={authenticator}
+            />
+          ))}
+        </div>
       ) : (
         <div className="flex-grow flex items-center justify-center">
           <div className="flex flex-col items-center justify-center flex-grow gap-4">
@@ -55,8 +57,8 @@ const Authenticator: FC<Props> = ({ auth }) => {
               {isLoading
                 ? "Loading authenticators..."
                 : searchQuery
-                ? "No matching authenticators found."
-                : "No authenticators added yet."}
+                  ? "No matching authenticators found."
+                  : "No authenticators added yet."}
             </p>
           </div>
         </div>

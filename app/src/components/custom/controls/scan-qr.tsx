@@ -6,7 +6,7 @@ import {
   DrawerHeader,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner"
 import * as OTPAuth from "otpauth"
 import { useAdd } from "@/hooks/authenticator/use-add"
@@ -19,8 +19,15 @@ const ScanQR: FC = () => {
   const { address } = useAccount()
   const addMutation = useAdd()
 
+  const isProcessingRef = useRef(false)
+
   const handleScan = async (result: IDetectedBarcode[]) => {
-    if (result.length > 0 && !addMutation.isPending) {
+    if (
+      result.length > 0 &&
+      !addMutation.isPending &&
+      !isProcessingRef.current
+    ) {
+      isProcessingRef.current = true
       const rawValue = result[0].rawValue
       try {
         const totp = OTPAuth.URI.parse(rawValue)
@@ -54,10 +61,13 @@ const ScanQR: FC = () => {
           timestep: totp.period,
         })
       } catch (error) {
-        toast.error("Failed to add authenticator")
+        console.log(error)
+      } finally {
+        isProcessingRef.current = false
       }
     }
   }
+
   return (
     <Drawer direction={"right"} open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>

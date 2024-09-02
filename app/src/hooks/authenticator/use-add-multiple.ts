@@ -8,7 +8,7 @@ import { AUTHENTICATOR_CONTRACT } from "@/lib/contracts"
 export function useAddMultiple() {
   const chainId = useChainId()
   const contract = AUTHENTICATOR_CONTRACT[chainId]
-  
+
   const addMultipleMutation = useMutation({
     mutationFn: async ({
       auth,
@@ -30,6 +30,8 @@ export function useAddMultiple() {
     },
     onError: (error: Error) => {
       console.error("Import failed:", error)
+      if (error.message.includes("User rejected the request"))
+        return toast.error("User denied transaction signature.")
       toast.error(error.message)
     },
     onSuccess: (result) => {

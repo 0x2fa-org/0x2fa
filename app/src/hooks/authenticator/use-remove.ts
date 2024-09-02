@@ -24,6 +24,8 @@ export function useRemove() {
     },
     onError: (error: Error) => {
       console.error("remove authenticator error:", error)
+      if (error.message.includes("User rejected the request"))
+        return toast.error("User denied transaction signature.")
       toast.error(error.message)
     },
     onSuccess: (result) => {

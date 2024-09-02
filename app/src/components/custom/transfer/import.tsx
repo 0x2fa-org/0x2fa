@@ -5,7 +5,7 @@ import {
   DrawerHeader,
   DrawerFooter,
 } from "@/components/ui/drawer"
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import ImportIcon from "@/components/icons/import-icon"
 import BackIcon from "@/components/icons/back-icon"
@@ -24,25 +24,38 @@ const ImportAccount: FC<Props> = ({ auth }) => {
   const [open, setOpen] = useState(false)
   const { address } = useAccount()
   const addMultipleMutation = useAddMultiple()
+  const isProcessingRef = useRef(false)
 
   const handleScan = async (result: IDetectedBarcode[]) => {
-    if (result.length <= 0 || addMultipleMutation.isPending) return
+    if (
+      result.length <= 0 ||
+      addMultipleMutation.isPending ||
+      isProcessingRef.current
+    )
+      return
 
-    const parsedData = parseMigrationUri(result[0].rawValue)
-    if (!parsedData || parsedData.length === 0) {
+    isProcessingRef.current = true
+    try {
+      const parsedData = await parseMigrationUri(result[0].rawValue)
+      if (!parsedData || parsedData.length === 0) {
+        setOpen(false)
+        return toast.error("Invalid QR code")
+      }
+
       setOpen(false)
-      return toast.error("Invalid QR code")
+
+      await addMultipleMutation.mutateAsync({
+        auth,
+        secrets: parsedData.map((entry: ImportParse) => toByte20(entry.secret)),
+        labels: parsedData.map((entry: ImportParse) => entry.label.length > 0 ? entry.label : ""),
+        issuers: parsedData.map((entry: ImportParse) => entry.issuer),
+        timesteps: parsedData.map(() => 30),
+      })
+    } catch (error) {
+      console.error("Failed to import accounts")
+    } finally {
+      isProcessingRef.current = false
     }
-
-    setOpen(false)
-
-    await addMultipleMutation.mutateAsync({
-      auth,
-      secrets: parsedData.map((entry: ImportParse) => toByte20(entry.secret)),
-      labels: parsedData.map((entry: ImportParse) => entry.label),
-      issuers: parsedData.map((entry: ImportParse) => entry.issuer),
-      timesteps: parsedData.map(() => 30),
-    })
   }
 
   return (

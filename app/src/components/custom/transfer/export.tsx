@@ -21,18 +21,16 @@ interface Props {
 }
 
 const ExportAccount: FC<Props> = ({ auth, authenticators }) => {
-  const [selectedAuthenticators, setSelectedAuthenticators] = useState<
-    Set<number>
-  >(new Set())
+  const [selectedAuthenticators, setSelectedAuthenticators] = useState<Set<number>>(new Set())
   const { data: exportData } = useExport({ auth })
 
   useEffect(() => {
-    if (authenticators) {
+    if (authenticators && exportData) {
       setSelectedAuthenticators(
-        new Set(authenticators.map((_, index) => index))
+        new Set(authenticators.map((_, index) => index).filter(index => exportData[index] !== undefined))
       )
     }
-  }, [authenticators])
+  }, [authenticators, exportData])
 
   const exportUri = useMemo(() => {
     if (exportData && authenticators) {
@@ -44,9 +42,9 @@ const ExportAccount: FC<Props> = ({ auth, authenticators }) => {
   }, [exportData, authenticators, selectedAuthenticators])
 
   const handleSelectAll = (checked: boolean) => {
-    if (checked) {
+    if (checked && authenticators && exportData) {
       setSelectedAuthenticators(
-        new Set(authenticators?.map((_, index) => index))
+        new Set(authenticators.map((_, index) => index).filter(index => exportData[index] !== undefined))
       )
     } else {
       setSelectedAuthenticators(new Set())
@@ -79,7 +77,7 @@ const ExportAccount: FC<Props> = ({ auth, authenticators }) => {
           <p>Export Account</p>
         </div>
       </DrawerTrigger>
-      <DrawerContent className="h-screen">
+      <DrawerContent className="h-screen flex flex-col">
         <DrawerHeader />
         <div className="flex flex-col gap-2 mx-6 my-4">
           <h1 className="text-2xl font-semibold">Export Account</h1>
@@ -89,7 +87,7 @@ const ExportAccount: FC<Props> = ({ auth, authenticators }) => {
           </p>
         </div>
         {authenticators && authenticators.length > 0 && (
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-5 flex-grow overflow-hidden">
             <div className="py-5 border-b border-border">
               <div className="mx-6 flex items-center space-x-2">
                 <Checkbox
@@ -109,30 +107,32 @@ const ExportAccount: FC<Props> = ({ auth, authenticators }) => {
                 </Label>
               </div>
             </div>
-            {authenticators.map(
-              (authenticator: AuthenticatorCode, index: number) => (
-                <div className="flex items-center space-x-3 mx-6" key={index}>
-                  <Checkbox
-                    id={`authenticator-${index}`}
-                    checked={selectedAuthenticators.has(index)}
-                    onCheckedChange={() => handleAuthenticatorToggle(index)}
-                  />
-                  <Label
-                    htmlFor={`authenticator-${index}`}
-                    className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm text-foreground font-normal"
-                  >
-                    {authenticator.issuer
-                      ? `${authenticator.issuer}: ${authenticator.label}`
-                      : authenticator.label}
-                  </Label>
-                </div>
-              )
-            )}
+            <div className="overflow-y-auto flex-grow">
+              {authenticators.map(
+                (authenticator: AuthenticatorCode, index: number) => (
+                  <div className="flex items-center space-x-3 mx-6 mb-4" key={index}>
+                    <Checkbox
+                      id={`authenticator-${index}`}
+                      checked={selectedAuthenticators.has(index)}
+                      onCheckedChange={() => handleAuthenticatorToggle(index)}
+                    />
+                    <Label
+                      htmlFor={`authenticator-${index}`}
+                      className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm text-foreground font-normal"
+                    >
+                      {authenticator.issuer
+                        ? `${authenticator.issuer}: ${authenticator.label}`
+                        : authenticator.label}
+                    </Label>
+                  </div>
+                )
+              )}
+            </div>
           </div>
         )}
         <Drawer direction={"right"}>
           <DrawerTrigger disabled={selectedAuthenticators.size === 0}>
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full px-6">
+            <div className="mt-auto px-6 py-8">
               <Button
                 className="h-14 rounded-full gap-2 w-full"
                 disabled={selectedAuthenticators.size === 0}

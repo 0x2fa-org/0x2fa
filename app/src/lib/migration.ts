@@ -1,83 +1,45 @@
-import { decode } from "js-base64"
+import { Buffer } from "buffer"
 import protobuf from "protobufjs"
-import { fromByte20 } from "./utils"
+import { fromByte20, toBase32 } from "./utils"
 import { base32Decode } from "@ctrl/ts-base32"
 
-export const parseMigrationUri = (uri: string): ImportParse[] | undefined => {
+export const parseMigrationUri = async (
+  uri: string
+): Promise<ImportParse[] | undefined> => {
   try {
     const url = new URL(uri)
     const data = url.searchParams.get("data")
-    if (!data) return undefined
 
-    const decoded = decode(data)
-    const buffer = new Uint8Array(decoded.length)
-    for (let i = 0; i < decoded.length; ++i) {
-      buffer[i] = decoded.charCodeAt(i)
+    if (!data) {
+      throw new Error("Invalid URI: missing data parameter")
     }
 
-    // Define the protobuf structure
-    const root = protobuf.Root.fromJSON({
-      nested: {
-        MigrationPayload: {
-          fields: {
-            otpParameters: {
-              rule: "repeated",
-              type: "OtpParameters",
-              id: 1,
-            },
-          },
-        },
-        OtpParameters: {
-          fields: {
-            secret: { type: "bytes", id: 1 },
-            label: { type: "string", id: 2 },
-            issuer: { type: "string", id: 3 },
-            algorithm: { type: "Algorithm", id: 4 },
-            digits: { type: "Digits", id: 5 },
-            type: { type: "OtpType", id: 6 },
-          },
-        },
-        Algorithm: {
-          values: {
-            ALGORITHM_UNSPECIFIED: 0,
-            ALGORITHM_SHA1: 1,
-            ALGORITHM_SHA256: 2,
-            ALGORITHM_SHA512: 3,
-          },
-        },
-        Digits: {
-          values: { DIGITS_UNSPECIFIED: 0, DIGITS_SIX: 1, DIGITS_EIGHT: 2 },
-        },
-        OtpType: {
-          values: {
-            OTP_TYPE_UNSPECIFIED: 0,
-            OTP_TYPE_HOTP: 1,
-            OTP_TYPE_TOTP: 2,
-          },
-        },
-      },
-    })
+    const buffer = Buffer.from(decodeURIComponent(data), "base64")
 
-    const MigrationPayload = root.lookupType("MigrationPayload")
-    const decoded_data = MigrationPayload.decode(buffer)
-    const object = MigrationPayload.toObject(decoded_data, {
-      enums: String,
+    // Load the protobuf schema
+    const root = protobuf.Root.fromJSON(protobuf.parse(googleAuthProto).root)
+    const MigrationPayload = root.lookupType("googleauth.MigrationPayload")
+
+    // Decode the protobuf message
+    const message = MigrationPayload.decode(buffer)
+    const decodedPayload = MigrationPayload.toObject(message, {
       longs: String,
+      enums: String,
       bytes: String,
-      defaults: true,
     })
 
-    return object.otpParameters
+    // Process and filter the decoded accounts
+    return decodedPayload.otpParameters
       .filter(
-        (otp: any) =>
-          otp.algorithm === "ALGORITHM_SHA1" &&
-          otp.digits === "DIGITS_SIX" &&
-          otp.type === "OTP_TYPE_TOTP"
+        (account: any) =>
+          account.algorithm === "SHA1" &&
+          account.digits === "SIX" &&
+          account.type === "TOTP"
       )
-      .map((otp: any) => ({
-        secret: otp.secret,
-        label: otp.label,
-        issuer: otp.issuer,
+      .map((account: any) => ({
+        secret: toBase32(account.secret),
+        label: account.name,
+        issuer: account.issuer,
       }))
   } catch (error) {
     console.error("Error parsing OTP migration URI:", error)
@@ -151,3 +113,44 @@ export const generateMigrationUri = (data: AuthenticatorExport[]): string => {
   const base64Data = Buffer.from(buffer).toString("base64")
   return `otpauth-migration://offline?data=${encodeURIComponent(base64Data)}`
 }
+
+// Define the protobuf message structure
+const googleAuthProto = `
+syntax = "proto3";
+package googleauth;
+message MigrationPayload {
+  enum Algorithm {
+    ALGORITHM_UNSPECIFIED = 0;
+    SHA1 = 1;
+    SHA256 = 2;
+    SHA512 = 3;
+    MD5 = 4;
+  }
+  enum DigitCount {
+    DIGIT_COUNT_UNSPECIFIED = 0;
+    SIX = 1;
+    EIGHT = 2;
+    SEVEN = 3;
+  }
+  enum OtpType {
+    OTP_TYPE_UNSPECIFIED = 0;
+    HOTP = 1;
+    TOTP = 2;
+  }
+  message OtpParameters {
+    bytes secret = 1;
+    string name = 2;
+    string issuer = 3;
+    Algorithm algorithm = 4;
+    DigitCount digits = 5;
+    OtpType type = 6;
+    int64 counter = 7;
+    string unique_id = 8;
+  }
+  repeated OtpParameters otp_parameters = 1;
+  int32 version = 2;
+  int32 batch_size = 3;
+  int32 batch_index = 4;
+  int32 batch_id = 5;
+}
+`
