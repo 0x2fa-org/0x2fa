@@ -34,7 +34,7 @@ contract AuthenticatorTest is Test {
     assertEq(entries.length, 1);
     assertEq(entries[0].label, "Test Label");
     assertEq(entries[0].issuer, "Test Issuer");
-    assertEq(entries[0].timeStep, 30);
+    assertEq(entries[0].timestep, 30);
   }
 
   function testRemoveAuthenticator() public {
@@ -91,7 +91,7 @@ contract AuthenticatorTest is Test {
       "Test Issuer 1",
       "First authenticator issuer mismatch"
     );
-    assertEq(entries[0].timeStep, 30, "First authenticator time step mismatch");
+    assertEq(entries[0].timestep, 30, "First authenticator time step mismatch");
 
     assertEq(entries[1].id, 1, "Second authenticator ID should be 1");
     assertEq(
@@ -110,7 +110,7 @@ contract AuthenticatorTest is Test {
       "Second authenticator issuer mismatch"
     );
     assertEq(
-      entries[1].timeStep,
+      entries[1].timestep,
       60,
       "Second authenticator time step mismatch"
     );
