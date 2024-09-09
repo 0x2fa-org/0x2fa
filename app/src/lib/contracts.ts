@@ -9,7 +9,7 @@ export const AUTHENTICATOR_CONTRACT: Record<
   { address: `0x${string}`; abi: Abi }
 > = {
   [sapphire.id]: {
-    address: "0x0000000000000000000000000000000000000000",
+    address: "0x1068d3fa14f0AC485406a0E47F999B54687Ec223",
     abi: ABI,
   },
   [sapphireTestnet.id]: {
