@@ -60,6 +60,7 @@ const AddManually: FC = () => {
       timestep: 30,
     })
   }
+  
   return (
     <Drawer direction={"right"}>
       <DrawerTrigger>
@@ -75,9 +76,9 @@ const AddManually: FC = () => {
           <p>Add Manually</p>
         </div>
       </DrawerTrigger>
-      <DrawerContent className="h-screen">
-        <DrawerHeader />
-        <div className="flex flex-col gap-2 mx-6 my-4 mb-10">
+      <DrawerContent className="h-screen flex flex-col">
+        <DrawerHeader className="flex-shrink-0" />
+        <div className="flex-shrink-0 flex flex-col gap-2 mx-6 my-4 mb-10">
           <h1 className="text-2xl font-semibold">Enter Account Details</h1>
           <p className="text-sm">
             Add a new 2FA account by entering the required details below.
@@ -86,7 +87,7 @@ const AddManually: FC = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mx-6"
+            className="flex-grow overflow-y-auto space-y-8 mx-6 pb-24"
           >
             <FormField
               control={form.control}
@@ -139,7 +140,7 @@ const AddManually: FC = () => {
                 </FormItem>
               )}
             />
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full px-6">
+            <div className="flex-shrink-0 absolute bottom-8 left-1/2 -translate-x-1/2 w-full px-6">
               <Button
                 className="h-14 rounded-full gap-2 w-full"
                 type="submit"

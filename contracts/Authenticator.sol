@@ -221,10 +221,8 @@ contract Authenticator is IAuthenticator {
     uint32 _timestep
   ) private {
     if (_secret == bytes20(0)) revert InvalidSecret();
-    if (bytes(_label).length == 0 || bytes(_label).length > 100)
-      revert InvalidLabel();
-    if (bytes(_issuer).length == 0 || bytes(_issuer).length > 100)
-      revert InvalidIssuer();
+    if (bytes(_label).length > 100) revert InvalidLabel();
+    if (bytes(_issuer).length > 100) revert InvalidIssuer();
     if (_timestep == 0 || _timestep > 3600) revert InvalidTimeStep();
 
     uint256 newId = _userAuthenticatorCount[_auth.user];

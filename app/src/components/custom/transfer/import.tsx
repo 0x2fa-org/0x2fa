@@ -48,7 +48,7 @@ const ImportAccount: FC<Props> = ({ auth }) => {
         auth,
         secrets: parsedData.map((entry: ImportParse) => toByte20(entry.secret)),
         labels: parsedData.map((entry: ImportParse) => entry.label.length > 0 ? entry.label : ""),
-        issuers: parsedData.map((entry: ImportParse) => entry.issuer),
+        issuers: parsedData.map((entry: ImportParse) => entry.issuer.length > 0 ? entry.issuer : ""),
         timesteps: parsedData.map(() => 30),
       })
     } catch (error) {

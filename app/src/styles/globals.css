@@ -74,3 +74,16 @@
   font-family: 'Space Grotesk', sans-serif;
   user-select: none;
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+  select:focus,
+  textarea:focus,
+  input:focus {
+    font-size: 16px;
+  }
+  select,
+  textarea,
+  input {
+    font-size: 16px;
+  }
+}
